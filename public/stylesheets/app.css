@@ -88,5 +88,8 @@ body.landing .navbar {
   padding: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.4); }
 
+.none {
+  color: white; }
+
 
 /*# sourceMappingURL=app.css.map*/
