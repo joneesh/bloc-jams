@@ -91,30 +91,7 @@
   globals.require.brunch = true;
 })();
 require.register("scripts/album", function(exports, require, module) {
- var createSongRow = function(songNumber, songName, songLength) {
-   var template =
-       '<tr>'
-     + '  <td class="col-md-1">' + songNumber + '</td>'
-     + '  <td class="col-md-9">' + songName + '</td>'
-     + '  <td class="col-md-2">' + songLength + '</td>'
-     + '</tr>'
-     ;
- 
-   return $(template);
- };
-
-
-// This 'if' condition is used to prevent the jQuery modifications
- // from happening on non-Album view pages.
- //  - Use a regex to validate that the url has "/album" in its path.
- if (document.URL.match(/\/album.html/)) {
-   // Wait until the HTML is fully processed.
-   $(document).ready(function() {
-     console.log("album.js")
-   });
- }
-
- // Example Album
+// Example Album
  var albumPicasso = {
    name: 'The Colors',
    artist: 'Pablo Picasso',
@@ -146,81 +123,149 @@ require.register("scripts/album", function(exports, require, module) {
      ]
  };
 
+var currentlyPlayingSong = null;
 
- var changeAlbumView = function(album) {
-   // Update the album title
-   var $albumTitle = $('.album-title');
-   $albumTitle.text(album.name);
+var createSongRow = function(songNumber, songName, songLength) {
+  var template =
+      '<tr>'
+      +'  <td class="song-number col-md-1" data-song-number="' + songNumber + '">' + songNumber + '</td>'
+      +'  <td class="col-md-9">' + songName + '</td>'
+      +'  <td class="col-md-2">' + songLength + '</td>'
+      +'</tr>'
+      ;
+  // Instead of returning the row immediately, we'll attach hover
+  // functionality to it first.
+   var $row = $(template);
  
-   // Update the album artist
-   var $albumArtist = $('.album-artist');
-   $albumArtist.text(album.artist);
+   var onHover = function(event) {
+     songNumberCell = $(this).find('.song-number');
+     songNumberCell.html('<a class="album-song-button"><i class="fa fa-play"></i></a>');
+   };
  
-   // Update the meta information
-   var $albumMeta = $('.album-meta-info');
-   $albumMeta.text(album.year + " on " + album.label);
+   var offHover = function(event) {
+     songNumberCell = $(this).find('.song-number');
+      songNumber = songNumberCell.data('song-number');
+      songNumberCell.html(songNumber);
+   };
  
-   // Update the album image
-   var $albumImage = $('.album-image img');
-   $albumImage.attr('src', album.albumArtUrl);
+ // Toggle the play, pause, and song number based on the button clicked.
+   var clickHandler = function(event) {
+     songNumber = $(this).data('song-number');
  
-   // Update the Song List
-   var $songList = $(".album-song-listing");
-   $songList.empty();
-   var songs = album.songs;
-   for (var i = 0; i < songs.length; i++) {
-     var songData = songs[i];
-     var $newRow = createSongRow(i + 1, songData.name, songData.length);
-     $songList.append($newRow);
-   }
+     if (currentlyPlayingSong !== null) {
+       // Revert to song number for currently playing song because user started playing new song.
+       currentlyPlayingCell = $('.song-number[data-song-number="' + currentlyPlayingSong + '"]');
+       currentlyPlayingCell.html(currentlyPlayingSong);
+     }
  
-       changeAlbumView(albumMarconi);
+     if (currentlyPlayingSong !== songNumber) {
+       // Switch from Play -> Pause button to indicate new song is playing.
+       $(this).html('<a class="album-song-button"><i class="fa fa-pause"></i></a>');
+       currentlyPlayingSong = songNumber;
+     }
+     else if (currentlyPlayingSong === songNumber) {
+       // Switch from Pause -> Play button to pause currently playing song.
+       $(this).html('<a class="album-song-button"><i class="fa fa-play"></i></a>');
+       currentlyPlayingSong = null;
+     }
+   };
+// line to save changes
+   $row.find('.song-number').click(clickHandler);
+   $row.hover(onHover, offHover);
+   return $row;
+
+  };
+
+var changeAlbumView = function(album) {
+  // Update the album title
+  var $albumTitle = $('.album-title');
+  $albumTitle.text(album.name);
+
+  // Update the albut artist
+  var $albumArtist = $('.album-artist');
+  $albumArtist.text(album.artist);
+
+  // Update the meta information
+  var $albumMeta = $('.album-meta-info');
+  $albumMeta.text(album.year + " on " + album.lable);
+
+  // Update the album image
+  var $albumImage = $('.album-image img');
+  $albumImage.attr('src', album.albumArtUrl);
+
+  // Update the Song List
+  var $songList = $(".album-song-listing");
+  $songList.empty();
+  var songs = album.songs;
+  for (var i = 0; i < songs.length; i++) {
+    var songData = songs[i];
+    var $newRow = createSongRow(i + 1, songData.name, songData.length);
+    $songList.append($newRow);
+  }
+
+};
+
+// below the changeAlbumView function
+
+var updateSeekPercentage = function($seekBar, event) {
+   var barWidth = $seekBar.width();
+   var offsetX = event.pageX - $seekBar.offset().left;
+ 
+   var offsetXPercent = (offsetX  / $seekBar.width()) * 100;
+   offsetXPercent = Math.max(0, offsetXPercent);
+   offsetXPercent = Math.min(100, offsetXPercent);
+ 
+   var percentageString = offsetXPercent + '%';
+   $seekBar.find('.fill').width(percentageString);
+   $seekBar.find('.thumb').css({left: percentageString});
+ }
+
+var setupSeekBars = function() {
+ 
+   $seekBars = $('.player-bar .seek-bar');
+   $seekBars.click(function(event) {
+     updateSeekPercentage($(this), event);
+   });
+   $seekBars.find('.thumb').mousedown(function(event) {
+    var $seekBar = $(this).parent();
+
+    $seekBar.addClass('no-animate');
+
+    $(document).bind('mousemove.thumb', function(event) {
+      updateSeekPercentage($seekBar, event);
+    });
+
+    //cleanup
+    $(document).bind('mouseup.thumb', function() {
+      $seekBar.removeClass('no-animate');
+
+      $(document).unbind('mousemove.thumb');
+      $(document).unbind('mouseup.thumb');
+    });
+
+   });
+
  };
 
- // This 'if' condition is used to prevent the jQuery modifications
-// from happening on non-Album view pages.
-//  - Use a regex to validate that the url has "/album" in its path.
+// This 'if' condition is used to prevent the jQuery modifications
+// from happening on non-album view pages.
+// - Use a regex to validate that the url has "/album" in its path.
 if (document.URL.match(/\/album.html/)) {
- // Wait until the HTML is fully processed.
- $(document).ready(function() {
-     
-
- });
+  // Wait until the HTML is fully processed.
+  $(document).ready(function() {
+       changeAlbumView(albumMarconi)
+       setupSeekBars();
+  });
 }
+
 });
 
 ;require.register("scripts/app", function(exports, require, module) {
-//  $(document).ready(function() {
-//	console.log("hello!");
-// });
-
- //$(document).ready(function() {
-  	//$('.hero-content h3').click(function(){
-//	       console.log("hello!");
-//	});
-// });
-
-// $(document).ready(function() {
-//	$('.hero-content h3').click(function(){
- //     subText = $(this).text();
- //     $(this).text(subText + "!");	});
-// });
+  require('./landing');
+  require('./collection');
+  require('./album');
 
 
-// $(document).ready(function() {
-//	$('.hero-content h3').click(function(){
-//    subText = $(this).text();
-  //  $(this).text(subText + "!");	
-//      console.log('Click action triggered.');
-//});
-
-// $('.selling-points .point').hover(function() {
-//     console.log('Hover action triggered.');
-//     $(this).animate({'margin-top': '-10px'});
-//   });
-//});
-require("./landing");
-require("./collection");
 
 
 });
