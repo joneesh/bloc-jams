@@ -7,16 +7,17 @@ if (document.URL.match(/\/collection.html/)) {
        var $newThumbnail = buildAlbumThumbnail();
        $collection.append($newThumbnail);
      }
+     updateCollectionView();
   });
  }
 
  var buildAlbumThumbnail = function() {
     var template =
         '<div class="collection-album-container col-md-2">'
-         + '  <div class="collection-album-image-container">'
+
       + '  <div class="collection-album-image-container">'
-   + '    <img src="/images/album-placeholder.png"/>'
-   + '  </div>'
+   + '        <img src="/images/album-placeholder.png"/>'
+   + '     </div>'
    + '  </div>'
       + '  <div class="caption album-collection-info">'
       + '    <p>'
@@ -52,19 +53,23 @@ if (document.URL.match(/\/collection.html/)) {
   };
 
   var updateCollectionView = function() {
-  var $collection = $(".collection-container .row");
-  $collection.empty();
+      var $collection = $(".collection-container .row");
+      $collection.empty();
 
-  for (var i = 0; i < 33; i++) {
-    var $newThumbnail = buildAlbumThumbnail();
-    $collection.append($newThumbnail);
-  }
+      for (var i = 0; i < 33; i++) {
+        var $newThumbnail = buildAlbumThumbnail();
+        $collection.append($newThumbnail);
+      }
 
-   var onHover = function(event) {
-     $(this).append(buildAlbumOverlay("/album.html"));
+       var onHover = function(event) {
+         $(this).append(buildAlbumOverlay("/album.html"));
+       };
 
-        $collection.find('.collection-album-image-container').hover(onHover);
-   };
+         var offHover = function(event) {
+        $(this).find('.collection-album-image-overlay').remove();
+      };
+
+          $collection.find('.collection-album-image-container').hover(onHover,offHover);
+};
 
    
-);
