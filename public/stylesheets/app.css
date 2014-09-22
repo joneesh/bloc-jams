@@ -95,8 +95,7 @@ body.landing .navbar {
 
 .collection-album-container {
   margin-top: 30px;
-  margin-bottom: 20px;
-  border: solid 1px white; }
+  margin-bottom: 20px; }
 
 .collection-album-container .caption {
   margin-top: 10px; }
@@ -153,11 +152,6 @@ body.landing .navbar {
 .collection-album-container .collection-overlay-button .fa-play {
   padding-left: 5px; }
 
-/* ------------- fix attempt-collection view --------------  */
-.album-collection-info {
-  border: solid 1px red; }
-
-/* ------------- fix attempt-collection view -------------  */
 .album-song-button {
   text-align: center;
   font-size: 14px;
