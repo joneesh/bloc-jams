@@ -326,7 +326,7 @@ if (document.URL.match(/\/collection.html/)) {
       + '  <div class="collection-album-image-container">'
    + '        <img src="/images/album-placeholder.png"/>'
    + '     </div>'
-   + '  </div>'
+
       + '  <div class="caption album-collection-info">'
       + '    <p>'
       + '      <a class="album-name" href="/album.html"> Album Name </a>'
@@ -337,8 +337,8 @@ if (document.URL.match(/\/collection.html/)) {
       + '      <br/>'
       + '    </p>'
       + '  </div>'
-      + '</div>';
- 
+      + '</div>'
+    + '  </div>';
    return $(template);
  };
 
