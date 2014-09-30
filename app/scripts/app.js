@@ -3,6 +3,7 @@
  //require('./collection');
  //require('./profile');
  
+
  // Example album.
  var albumPicasso = {
    name: 'The Colors',
@@ -19,6 +20,7 @@
        { name: 'Magenta', length: '2:15'}
      ]
  };
+ 
 
 
 
@@ -37,6 +39,12 @@
      url: '/collection',
      controller: 'Collection.controller',
      templateUrl: '/templates/collection.html'
+   });
+
+    $stateProvider.state('album', {
+     url: '/album',
+     templateUrl: '/templates/album.html',
+     controller: 'Album.controller'
    });
    
  }]);
@@ -72,3 +80,58 @@
      $scope.albums.push(angular.copy(albumPicasso));
    }
  }]);
+
+   blocJams.controller('Album.controller', ['$scope', 'SongPlayer', function($scope, SongPlayer) {
+   $scope.album = angular.copy(albumPicasso);
+    var hoveredSong = null;
+   
+ 
+   $scope.onHoverSong = function(song) {
+     hoveredSong = song;
+   };
+ 
+   $scope.offHoverSong = function(song) {
+     hoveredSong = null;
+   };
+   $scope.getSongState = function(song) {
+     if (song === SongPlayer.currentSong && SongPlayer.playing) {
+       return 'playing';
+     }
+     else if (song === hoveredSong) {
+       return 'hovered';
+     }
+     return 'default';
+   };
+
+       $scope.playSong = function(song) {
+      SongPlayer.setSong($scope.album, song);
+      SongPlayer.play();
+    };
+ 
+    $scope.pauseSong = function(song) {
+      SongPlayer.pause();
+    };
+ }]);
+
+blocJams.controller('PlayerBar.controller', ['$scope', 'SongPlayer', function($scope, SongPlayer) {
+   $scope.songPlayer = SongPlayer;
+ }]);
+
+blocJams.service('SongPlayer', function() {
+   return {
+     currentSong: null,
+     currentAlbum: null,
+     playing: false,
+ 
+     play: function() {
+       this.playing = true;
+     },
+     pause: function() {
+       this.playing = false;
+     },
+     setSong: function(album, song) {
+       this.currentAlbum = album;
+       this.currentSong = song;
+     }
+   };
+ });
