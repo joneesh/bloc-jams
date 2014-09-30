@@ -339,7 +339,7 @@ if (document.URL.match(/\/album.html/)) {
      templateUrl: '/templates/collection.html'
    });
 
-    $stateProvider.state('album', {
+   $stateProvider.state('album', {
      url: '/album',
      templateUrl: '/templates/album.html',
      controller: 'Album.controller'
@@ -380,19 +380,21 @@ if (document.URL.match(/\/album.html/)) {
  }]);
 
    blocJams.controller('Album.controller', ['$scope', 'SongPlayer', function($scope, SongPlayer) {
-   $scope.album = angular.copy(albumPicasso);
-    var hoveredSong = null;
    
+   $scope.album = angular.copy(albumPicasso);
+       var hoveredSong = null;
+       var playingSong = null;
  
    $scope.onHoverSong = function(song) {
      hoveredSong = song;
    };
- 
+    
    $scope.offHoverSong = function(song) {
      hoveredSong = null;
    };
+
    $scope.getSongState = function(song) {
-     if (song === SongPlayer.currentSong && SongPlayer.playing) {
+     if (song === playingSong) {
        return 'playing';
      }
      else if (song === hoveredSong) {
@@ -402,17 +404,17 @@ if (document.URL.match(/\/album.html/)) {
    };
 
        $scope.playSong = function(song) {
-      SongPlayer.setSong($scope.album, song);
-      SongPlayer.play();
+       playingSong = song;
     };
  
     $scope.pauseSong = function(song) {
-      SongPlayer.pause();
+      playingSong = null;
     };
+
  }]);
 
-blocJams.controller('PlayerBar.controller', ['$scope', 'SongPlayer', function($scope, SongPlayer) {
-   $scope.songPlayer = SongPlayer;
+ blocJams.controller('Album.controller', ['$scope', function($scope) {
+   $scope.album = angular.copy(albumPicasso);
  }]);
 
 blocJams.service('SongPlayer', function() {
