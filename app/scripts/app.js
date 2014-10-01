@@ -126,7 +126,7 @@ blocJams.controller('PlayerBar.controller', ['$scope', 'SongPlayer', function($s
  }]);
 
  blocJams.service('SongPlayer', function() {
-      var trackIndex = function(album, song) {
+   var trackIndex = function(album, song) {
      return album.songs.indexOf(song);
    };
 
@@ -151,7 +151,7 @@ blocJams.controller('PlayerBar.controller', ['$scope', 'SongPlayer', function($s
        }
        this.currentSong = this.currentAlbum.songs[currentTrackIndex];
      },
-          previous: function() {
+     previous: function() {
        var currentTrackIndex = trackIndex(this.currentAlbum, this.currentSong);
        currentTrackIndex--;
        if (currentTrackIndex < 0) {
