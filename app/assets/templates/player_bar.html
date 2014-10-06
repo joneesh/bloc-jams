@@ -13,18 +13,21 @@
        </a>
      </div>
      <div class='currently-playing player-bar-control-group'>
-       <h2 class='song-name'>(Song here) {{ songPlayer.currentSong.name }} </h2>
+       <h2 class='song-name'> {{ songPlayer.currentSong.name }} </h2>
        <div class='seek-control'>
+
          <slider></slider>
-         <div class='current-time'> (time here) {{ songPlayer.playTime }} </div>
-         <div class='total-time'> (length here) {{ songPlayer.currentSong.length }}</div>
+        
+         <div class='current-time'> {{ songPlayer.playTime }} </div>
+         <div class='total-time'>  {{ songPlayer.currentSong.length }}</div>
        </div>
-       <h3 class='artist-name'>(artist here) {{ songPlayer.currentAlbum.artist }} </h3>
+       <h3 class='artist-name'> {{ songPlayer.currentAlbum.artist }} </h3>
      </div>
      <div class='right-controls player-bar-control-group'>
        <div class='volume' >
          <i class='fa fa-volume-up'></i>
-        <slider></slider>
+         
+         <slider></slider>
        </div>
        <div class='queue-toggle'>
          <a>
