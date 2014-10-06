@@ -146,12 +146,14 @@
       transition: all 100ms ease-in-out;
     }
  
+    
     &:active {
       .fill, .thumb {
         transition: none;
       }
     }
  
+    
     &:hover .thumb, &:active .thumb {
       width: 20px;
       height: 20px;
