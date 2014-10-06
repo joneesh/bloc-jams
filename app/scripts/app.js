@@ -184,6 +184,15 @@ blocJams.service('SongPlayer', function($rootScope) {
       }
       this.volume = volume;
     },
+
+    seek: function(time) {
+       // Checks to make sure that a sound file is playing before seeking.
+       if(currentSoundFile) {
+         // Uses a Buzz method to set the time of the song.
+         currentSoundFile.setTime(time);
+       }
+     },
+
     setSong: function(album, song) {
       if (currentSoundFile) {
         currentSoundFile.stop();
@@ -242,10 +251,20 @@ blocJams.directive('slider', ['$document', function($document){
        // These values represent the progress into the song/volume bar, and its max value.
        // For now, we're supplying arbitrary initial and max values.
        scope.value = 0;
-       scope.max = 200;
+       scope.max = 100;
       var $seekBar = $(element);
+             attributes.$observe('value', function(newValue) {
+        scope.value = numberFromValue(newValue, 0);
+      });
+ 
+      attributes.$observe('max', function(newValue) {
+        scope.max = numberFromValue(newValue, 100) || 100;
+      });
+
        var percentString = function () {
-         percent = Number(scope.value) / Number(scope.max)  * 100;
+          var value = scope.value || 0;
+          var max = scope.max || 100;
+          percent = value / max * 100;
          return percent + "%";
        }
  
@@ -270,6 +289,21 @@ blocJams.directive('slider', ['$document', function($document){
         scope.max = numberFromValue(newValue, 100) || 100;
       });
 
+   var numberFromValue = function(value, defaultValue) {
+     if (typeof value === 'number') {
+       return value;
+     }
+ 
+     if(typeof value === 'undefined') {
+       return defaultValue;
+     }
+ 
+     if(typeof value === 'string') {
+       return Number(value);
+     }
+   }
+
+
       var percentString = function () {
         var value = scope.value || 0;
         var max = scope.max || 100;
@@ -288,7 +322,14 @@ blocJams.directive('slider', ['$document', function($document){
        scope.onClickSlider = function(event) {
          var percent = calculateSliderPercentFromMouseEvent($seekBar, event);
          scope.value = percent * scope.max;
-       }
+          notifyCallback(scope.value);
+      }
+
+     var notifyCallback = function(newValue) {
+         if(typeof scope.onChange === 'function') {
+           scope.onChange({value: newValue});
+         }
+       };
 
 
       scope.trackThumb = function() {
@@ -300,8 +341,12 @@ blocJams.directive('slider', ['$document', function($document){
           });
         });
 
+
+
     }
  }
+
+
  };
 }]);
 
