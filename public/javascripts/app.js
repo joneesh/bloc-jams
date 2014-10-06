@@ -412,13 +412,13 @@ blocJams.controller('Album.controller', ['$scope', 'SongPlayer', function($scope
 blocJams.controller('PlayerBar.controller', ['$scope', 'SongPlayer', function($scope, SongPlayer) {
   $scope.songPlayer = SongPlayer;
 
-  $scope.volumeClass = function() {
-    return {
-      'fa-volume-off': SongPlayer.volume == 0,
-      'fa-volume-down': SongPlayer.volume <= 70 && SongPlayer.volume > 0,
-      'fa-volume-up': SongPlayer.volume > 70
-    }
-  }  
+   $scope.volumeClass = function() {
+     return {
+       'fa-volume-off': SongPlayer.volume == 0,
+       'fa-volume-down': SongPlayer.volume <= 70 && SongPlayer.volume > 0,
+       'fa-volume-up': SongPlayer.volume > 70
+     }
+   } 
 
    SongPlayer.onTimeUpdate(function(event, time){
      $scope.$apply(function(){
@@ -491,10 +491,17 @@ blocJams.service('SongPlayer', ['$rootScope', function($rootScope) {
        }
      },
 
+    setVolume: function(volume) {
+      if(currentSoundFile){
+        currentSoundFile.setVolume(volume);
+      }
+      this.volume = volume;
+    },  
+
     onTimeUpdate: function(callback) {
       return $rootScope.$on('sound:timeupdate', callback);
     },
-    
+
     setSong: function(album, song) {
       if (currentSoundFile) {
         currentSoundFile.stop();
@@ -508,9 +515,11 @@ blocJams.service('SongPlayer', ['$rootScope', function($rootScope) {
         preload: true
       });
 
-      currentSoundFile.bind('timeupdate', function(e){
-        $rootScope.$broadcast('sound:timeupdate', this.getTime());
-      });  
+    currentSoundFile.setVolume(this.volume);  
+
+      // currentSoundFile.bind('timeupdate', function(e){
+      //   $rootScope.$broadcast('sound:timeupdate', this.getTime());
+      // });  
 
       this.play();      
     }
