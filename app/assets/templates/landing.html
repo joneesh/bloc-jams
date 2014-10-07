@@ -1,31 +1,47 @@
 <div class='hero-content'> <!-- Hero content -->
-   <div class='container'>
-     <h1> Bloc Jams </h1>
+   <div class='container '>
+     <h1 class=' bounceIn'> Bloc Jams </h1>
      <h3 ng_click="subTextClicked()"> {{ subText }} </h3>
    </div>
  </div>
  
  <div class='selling-points container'> <!-- selling points -->
    <div class='row'>
-     <div class='point col-md-4'>
-       <h5> Choose your music </h5>
-       <p> The world is full of music, why should you have to listen to music that someone else chose? </p>
-     </div>
-     <div class='point col-md-4'>
-       <h5> Unlimited, streaming, ad-free </h5>
-       <p> No arbitrary limits. No distractions </p>
-     </div> 
-     <div class='point col-md-4'>
-       <h5>Mobile enabled</h5>
-       <p> Listen to your music on the go. This streaming service is available on all mobile platforms</p>
-     </div>
-   </div>
+     <div class='col-xs-12 point col-sm-12 col-md-4   '>
+         <!-- <div class="row1"> -->
+           <h5> Choose your music </h5>
+           <p> The world is full of music, why should you have to listen to music that someone else chose? </p>
+         <!-- </div> -->
+    </div>
+    <div class=' col-xs-12 point col-sm-12 col-md-4 '>
+         <!-- <div class="row2"> -->
+         <h5> Unlimited, streaming, ad-free </h5>
+         <p> No arbitrary limits. No distractions </p>
+       <!-- </div> -->
+    </div> 
+    <div class=' col-xs-12 point col-sm-12 col-md-4 '>
+        <!-- <div class="row3"> -->
+         <h5>Mobile enabled</h5>
+         <p> Listen to your music on the go. This streaming service is available on all mobile platforms</p>
+       <!-- </div> -->
+    </div>
  </div>
  
  <div class="landing-album-list container">
    <div class="row">
      <div class="col-md-4" ng-repeat="albumURL in albumURLs">
-       <img  ng-src="{{albumURL}}">
+       
+     <div class="flip-container" ontouchstart="this.classList.toggle('hover');">
+  <div class="flipper">
+    <div class="front">
+      <img  ng-src="{{albumURL}}">
+    </div>
+    <div class="back">
+      <img src="../images/back.jpg" />
+    </div>
+  </div>
+</div>
+
      </div>
    </div>
  </div>

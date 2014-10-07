@@ -650,11 +650,12 @@ blocJams.directive('slider', ['$document', function($document){
             scope.value = percent * scope.max;
             notifyCallback(scope.value);
           });
+          
         $document.bind('mouseup.thumb', function(event){
            $document.unbind('mousemove.thumb');
            $document.unbind('mouseup.thumb');
         });
-        });
+      });
 
 
 
